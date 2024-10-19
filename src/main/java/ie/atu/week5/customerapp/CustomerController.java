@@ -11,21 +11,20 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/customers")
 public class CustomerController {
+    private final CustomerService customerService;
 
-    private final CustomerRepository customerRepository;
-
-    public CustomerController(CustomerRepository customerRepository) {
-        this.customerRepository = customerRepository;
+    public CustomerController(CustomerService customerService) {
+        this.customerService = customerService;
     }
 
     @GetMapping
     public List<Customer> getAllCustomers() {
-        return customerRepository.findAll();
+        return customerService.getAllCustomers();
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Customer> getCustomerById(@PathVariable String id) {
-        Optional<Customer> customer = customerRepository.findById(id);
+        Optional<Customer> customer = customerService.getCustomerById(id);
         if (customer.isPresent()) {
             return ResponseEntity.ok(customer.get());
         } else {
@@ -35,16 +34,14 @@ public class CustomerController {
 
     @PostMapping
     public ResponseEntity<Customer> createCustomer(@Valid @RequestBody Customer customer) {
-        Customer savedCustomer = customerRepository.save(customer);
+        Customer savedCustomer = customerService.createCustomer(customer);
         return ResponseEntity.ok(savedCustomer);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCustomer(@PathVariable String id) {
-        if (customerRepository.existsById(id)) {
-            customerRepository.deleteById(id);
-            return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.notFound().build();
+        customerService.findById(id);  // This will throw an exception if not found
+        customerService.deleteCustomer(id);
+        return ResponseEntity.noContent().build(); // Return 204 No Content if deletion was successful
     }
 }
