@@ -25,4 +25,13 @@ public class GlobalExceptionHandler {
         });
         return new ResponseEntity<Object> (errors, HttpStatus.BAD_REQUEST);
     }
+
+    // create RuntimeExceptions (e.g. customerId not found)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<Object> handleRuntimeException(RuntimeException ex) {
+        Map<String, String> errorResponse = new HashMap<>();
+        errorResponse.put("error", ex.getMessage());
+        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+    }
 }
