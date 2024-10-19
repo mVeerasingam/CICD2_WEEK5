@@ -10,9 +10,11 @@ import java.util.List;
 public class OrderService {
 
     private final OrderRepository orderRepository;
+    private final  CustomerService customerService;
     @Autowired
-    public OrderService(OrderRepository orderRepository) {
+    public OrderService(OrderRepository orderRepository, CustomerService customerService) {
         this.orderRepository = orderRepository;
+        this.customerService = customerService;
     }
 
     public List<Order> getAllOrders() {
@@ -25,6 +27,8 @@ public class OrderService {
     }
 
     public Order createOrder(Order order){
+        // Make sure that Orders are not generated without being associated with a customer
+        customerService.findById(order.getCustomerId());
         Order savedOrder = orderRepository.save(order);
         return savedOrder;
     }

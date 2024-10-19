@@ -14,5 +14,6 @@ public class Order {
     private int orderCode;
     private String orderDetails;
     private String orderDate;
+    @NotBlank(message = "Customer ID cannot be blank")
     private String customerId; // Reference to the associated customer
 }
