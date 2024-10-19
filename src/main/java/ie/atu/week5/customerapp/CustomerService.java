@@ -2,6 +2,7 @@ package ie.atu.week5.customerapp;
 
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -30,11 +31,12 @@ public class CustomerService {
         return customerRepository.save(customer);
     }
 
-    public boolean deleteCustomer(String id) {
-        if (customerRepository.existsById(id)) {
-            customerRepository.deleteById(id);
-            return true;
-        }
-        return false;
+    public Customer findById(String id){
+        return customerRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Customer ID: "+ id + " not found"));
+    }
+
+    public void deleteCustomer(String id) {
+        customerRepository.deleteById(id);
     }
 }
