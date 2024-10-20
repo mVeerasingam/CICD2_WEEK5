@@ -31,10 +31,8 @@ public class CustomerOrderController {
 
         // 2. Save the Orders and link them to the customer
         List<Order> orders = customerOrderRequest.getOrders();
-        for (Order order : orders) {
-            order.setCustomerId(customerId);  // Link the customerId to each order
-            orderRepository.save(order);
-        }
+        orders.forEach(order -> order.setCustomerId(customerId));  // Link customerId to each order
+        orderRepository.saveAll(orders);
 
         return ResponseEntity.ok("Customer and orders created successfully");
     }
