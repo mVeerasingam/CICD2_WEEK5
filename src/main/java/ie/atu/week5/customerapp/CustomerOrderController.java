@@ -26,10 +26,13 @@ public class CustomerOrderController {
     public ResponseEntity<String> createCustomerWithOrders(@RequestBody CustomerOrderRequest customerOrderRequest) {
 
         // 1. Save the Customer and get the generated customer ID
-
+        Customer savedCustomer = customerRepository.save(customerOrderRequest.getCustomer());
+        String customerId = savedCustomer.getId();
 
         // 2. Save the Orders and link them to the customer
-
+        List<Order> orders = customerOrderRequest.getOrders();
+        orders.forEach(order -> order.setCustomerId(customerId));  // Link customerId to each order
+        orderRepository.saveAll(orders);
 
         return ResponseEntity.ok("Customer and orders created successfully");
     }
